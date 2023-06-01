@@ -1,0 +1,26 @@
+---
+inverter:
+  url: http://192.168.1.168:5000  # Inverter API url
+  name: "Gen24-10.0"    # Inverter name (can be any string)
+  device_id: 1
+  metrics:
+    - "CumulationInverterData"
+    - "CommonInverterData"
+    - "3PInverterData"
+    # - "MeterRealtimeData"
+    # - "PowerFlowRealtimeData"
+location:
+  name: "Greenwich"               # Location name (can be any string)
+  region: "England"               # Location region (can be any string)
+  timezone: "Europe/London"       # Location timezone
+  latitude: 51.48                 # Location latitude,
+  longitude: -0.00                # Location longitude
+influxdb:
+  url: http://localhost:8086      # InfluxDB server API url
+  organization: my-org            # InfluxDB organization name
+  bucket: my-bucket               # InfluxDB bucket name
+  verify_ssl: true                # verify SSL certificate (set to false for self-signed certificates)
+  username: my-user               # (auth variant 1) username to authenticate via username/password
+  password: my-password           # (auth variant 1) password to authenticate via username/password
+  #  auth_token: my-token            # (auth variant 2) authentication token to authenticate via token
+
