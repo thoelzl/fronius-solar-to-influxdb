@@ -1,0 +1,131 @@
+[
+{
+    "Body": {
+        "Data": {
+            "Inverters": {
+                "1": {
+                    "DT": 1,
+                    "E_Day": null,
+                    "E_Total": 212291.36305555556,
+                    "E_Year": null,
+                    "P": 6333.025390625
+                }
+            },
+            "SecondaryMeters": {},
+            "Site": {
+                "BackupMode": false,
+                "E_Day": null,
+                "E_Total": 212291.36305555556,
+                "E_Year": null,
+                "Meter_Location": "grid",
+                "Mode": "meter",
+                "P_Akku": null,
+                "P_Grid": -5792.3000000000002,
+                "P_Load": -529.81621093749982,
+                "P_PV": 6538.445556640625,
+                "rel_Autonomy": 100.0,
+                "rel_SelfConsumption": 8.3803617848861691
+            },
+            "Smartloads": {
+                "Ohmpilots": {}
+            },
+            "Version": "12"
+        }
+    },
+    "Head": {
+        "RequestArguments": {},
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:34:45+00:00"
+    }
+},
+{
+    "Body": {
+        "Data": {
+            "Inverters": {
+                "1": {
+                    "DT": 1,
+                    "E_Day": null,
+                    "E_Total": 212301.36305555556,
+                    "E_Year": null,
+                    "P": 6025.025390625
+                }
+            },
+            "SecondaryMeters": {},
+            "Site": {
+                "BackupMode": false,
+                "E_Day": null,
+                "E_Total": 212301.36305555556,
+                "E_Year": null,
+                "Meter_Location": "grid",
+                "Mode": "meter",
+                "P_Akku": null,
+                "P_Grid": -5582.3000000000002,
+                "P_Load": -501.81621093749982,
+                "P_PV": 6294.445556640625,
+                "rel_Autonomy": 100.0,
+                "rel_SelfConsumption": 8.297691
+            },
+            "Smartloads": {
+                "Ohmpilots": {}
+            },
+            "Version": "12"
+        }
+    },
+    "Head": {
+        "RequestArguments": {},
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:35:00+00:00"
+    }
+},
+{
+    "Body": {
+        "Data": {
+            "Inverters": {
+                "1": {
+                    "DT": 1,
+                    "E_Day": null,
+                    "E_Total": 212309.36305555556,
+                    "E_Year": null,
+                    "P": 5815.025390625
+                }
+            },
+            "SecondaryMeters": {},
+            "Site": {
+                "BackupMode": false,
+                "E_Day": null,
+                "E_Total": 212309.36305555556,
+                "E_Year": null,
+                "Meter_Location": "grid",
+                "Mode": "meter",
+                "P_Akku": null,
+                "P_Grid": -5362.3000000000002,
+                "P_Load": -511.81621093749982,
+                "P_PV": 6079.745556640625,
+                "rel_Autonomy": 100.0,
+                "rel_SelfConsumption": 8.714626
+            },
+            "Smartloads": {
+                "Ohmpilots": {}
+            },
+            "Version": "12"
+        }
+    },
+    "Head": {
+        "RequestArguments": {},
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:35:15+00:00"
+    }
+}
+]
