@@ -3,7 +3,7 @@ import datetime
 import logging
 import time
 import urllib
-from typing import List, Dict
+from typing import Dict
 
 import pytz
 import requests
@@ -11,7 +11,7 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from config import load_config, Config
-from data_processor import DataProcessor, INVERTER_METRICS
+from data_processor import DataProcessor
 
 
 class SunIsDown(Exception):

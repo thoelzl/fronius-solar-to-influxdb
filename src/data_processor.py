@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import datetime
 
@@ -18,29 +18,28 @@ def _get_float_value(data, value: str) -> float:
     return 0.0
 
 
-def _get_float(data, value: str) -> Optional[str]:
+def _get_float(data, value: str) -> float:
     if value in data and data[value] is not None:
         return float(data[value])
     return 0.0
 
 
-def _get_int(data, value: str) -> float:
+def _get_int(data, value: str) -> int:
     if value in data and data[value] is not None:
         return int(data[value])
     return 0
 
 
-def _get_string(data, value: str) -> Optional[str]:
+def _get_string(data, value: str) -> str:
     if value in data and data[value] is not None:
         return data[value]
     return ""
 
 
-def _get_bool(data, value: str) -> Optional[str]:
+def _get_bool(data, value: str) -> bool:
     if value in data and data[value] is not None:
         return bool(data[value])
     return False
-
 
 
 INVERTER_METRICS = [
@@ -122,7 +121,6 @@ class DataProcessor:
             }
 
             # add additional fields for Symo GEN24
-            strings_fields = []
             if 'SAC' in data:
                 inverter_data['fields']['SAC'] = _get_float_value(data, 'SAC')
             if 'IDC_2' in data:
@@ -205,7 +203,6 @@ class DataProcessor:
                     continue
 
                 meter_timestamp = datetime.datetime.utcfromtimestamp(int(data['TimeStamp']))
-                meter_timestamp = timestamp
 
                 # Dataformat for SmartMeter TS65A-3
                 meter_data = {
