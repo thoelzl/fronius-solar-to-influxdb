@@ -21,6 +21,9 @@ with open('samples/3PInverterData.json', 'r') as f:
 with open('samples/MinMaxInverterData.json', 'r') as f:
     min_max_inverter_data = json.loads(f.read())
 
+with open('samples/CumulationInverterData.json', 'r') as f:
+    cumulation_inverter_data = json.loads(f.read())
+
 with open('samples/MeterRealtimeData.json', 'r') as f:
     smart_meter_data = json.loads(f.read())
 
@@ -41,6 +44,8 @@ def get_inverter_realtime_data() -> str:
         json_response = random.choice(threep_inverter_data)
     elif data_collection == 'MinMaxInverterData':
         json_response = random.choice(min_max_inverter_data)
+    elif data_collection == 'CumulationInverterData':
+        json_response = random.choice(cumulation_inverter_data)
     else:
         json_response = {}
 

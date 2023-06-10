@@ -1,0 +1,122 @@
+[
+{
+    "Body": {
+        "Data": {
+            "DAY_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            },
+            "DeviceStatus": {
+                "ErrorCode": 0,
+                "InverterState": "Running",
+                "StatusCode": 7
+            },
+            "PAC": {
+                "Unit": "W",
+                "Value": 7232.2890625
+            },
+            "TOTAL_ENERGY": {
+                "Unit": "Wh",
+                "Value": 211689.24888888889
+            },
+            "YEAR_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            }
+        }
+    },
+    "Head": {
+        "RequestArguments": {
+            "DataCollection": "CumulationInverterData",
+            "DeviceId": "1",
+            "Scope": "Device"
+        },
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:27:09+00:00"
+    }
+},
+{
+    "Body": {
+        "Data": {
+            "DAY_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            },
+            "DeviceStatus": {
+                "ErrorCode": 0,
+                "InverterState": "Running",
+                "StatusCode": 7
+            },
+            "PAC": {
+                "Unit": "W",
+                "Value": 7013.2890625
+            },
+            "TOTAL_ENERGY": {
+                "Unit": "Wh",
+                "Value": 211709.24888888889
+            },
+            "YEAR_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            }
+        }
+    },
+    "Head": {
+        "RequestArguments": {
+            "DataCollection": "CumulationInverterData",
+            "DeviceId": "1",
+            "Scope": "Device"
+        },
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:27:19+00:00"
+    }
+},
+{
+    "Body": {
+        "Data": {
+            "DAY_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            },
+            "DeviceStatus": {
+                "ErrorCode": 0,
+                "InverterState": "Running",
+                "StatusCode": 7
+            },
+            "PAC": {
+                "Unit": "W",
+                "Value": 7115.2890625
+            },
+            "TOTAL_ENERGY": {
+                "Unit": "Wh",
+                "Value": 211728.24888888889
+            },
+            "YEAR_ENERGY": {
+                "Unit": "Wh",
+                "Value": null
+            }
+        }
+    },
+    "Head": {
+        "RequestArguments": {
+            "DataCollection": "CumulationInverterData",
+            "DeviceId": "1",
+            "Scope": "Device"
+        },
+        "Status": {
+            "Code": 0,
+            "Reason": "",
+            "UserMessage": ""
+        },
+        "Timestamp": "2023-05-20T10:26:59+00:00"
+    }
+}
+]

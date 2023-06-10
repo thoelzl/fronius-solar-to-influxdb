@@ -3,7 +3,7 @@ import datetime
 import logging
 import time
 import urllib
-from typing import List
+from typing import List, Dict
 
 import pytz
 import requests
@@ -11,24 +11,7 @@ from influxdb_client import InfluxDBClient
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from config import load_config, Config
-from data_processor import DataProcessor
-
-INVERTER_METRICS = [
-    "CumulationInverterData",
-    "CommonInverterData",
-    "3PInverterData",
-    "MinMaxInverterData",       # not supported by GEN24/Tauro
-    "MeterRealtimeData",
-    "PowerFlowRealtimeData",
-    # "InverterInfo",           # not supported yet
-    # "ActiveDeviceInfo",       # not supported yet
-    # "StorageRealtimeData",    # not supported yet
-    # "OhmPilotRealtimeData",   # not supported yet
-    # "SensorRealtimeData",     # not supported by GEN24/Tauro
-    # "StringRealtimeData",     # not supported by GEN24/Tauro
-    # "LoggerInfo",             # not supported by GEN24/Tauro
-    # "LoggerLEDInfo",          # not supported by GEN24/Tauro
-]
+from data_processor import DataProcessor, INVERTER_METRICS
 
 
 class SunIsDown(Exception):
@@ -59,16 +42,15 @@ class InfluxBridge:
                 self._sun_is_shining()
 
                 collected_data = []
-                for url in self.endpoints:
+                for metric, url in self.endpoints.items():
                     self.logger.info(f"requesting {url}")
                     response = requests.get(url)
-                    data = self.processor.process(response.json())
+                    data = self.processor.process(metric, response.json())
                     collected_data.extend(data)
                     time.sleep(self.REQUEST_INTERVAL)
 
                 if collected_data:
                     self._write_data_points(collected_data)
-                    time.sleep(self.REQUEST_INTERVAL)
             except SunIsDown:
                 self.logger.info("waiting for sunrise")
                 time.sleep(60)
@@ -84,10 +66,10 @@ class InfluxBridge:
     def close(self):
         self.logger.info("closing application")
 
-    def _get_endpoints(self) -> List[str]:
+    def _get_endpoints(self) -> Dict[str, str]:
         base_url = f"{self.config.inverter.url}/solar_api/v1"
 
-        endpoints = []
+        endpoints = {}
         for metric in self.config.inverter.metrics:
             params = None
             if metric in ["CumulationInverterData", "CommonInverterData", "3PInverterData", "MinMaxInverterData"]:
@@ -119,13 +101,13 @@ class InfluxBridge:
                     'Scope': 'System',
                 }
             else:
-                raise ValueError(f"Metric {metric} is not supported")
+                raise ValueError(f"Metric '{metric}' is not supported")
 
             # build endpoint
             endpoint = f"{base_url}/{route}"
             if params:
                 endpoint += "?" + urllib.parse.urlencode(params)
-            endpoints.append(endpoint)
+            endpoints[metric] = endpoint
 
         return endpoints
 
