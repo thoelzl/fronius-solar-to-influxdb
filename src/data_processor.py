@@ -12,6 +12,10 @@ class WrongFroniusData(Exception):
     pass
 
 
+def _has_value(data, value: str) -> bool:
+    return value in data and data[value].get('Value', None) is not None
+
+
 def _get_float_value(data, value: str) -> float:
     if value in data and data[value].get('Value', None) is not None:
         return float(data[value].get('Value', 0))
@@ -113,7 +117,7 @@ class DataProcessor:
         self.logger.debug(f"process device_id={device_id}, {collection}, {timestamp}: {data}")
         if collection == 'CommonInverterData':
             device_status = {
-                'measurement': 'InverterDeviceStatus',
+                'measurement': 'InverterStatus',
                 'time': timestamp,
                 'fields': data['DeviceStatus'],
                 'tags': {
@@ -143,15 +147,15 @@ class DataProcessor:
             }
 
             # add additional fields for Symo GEN24
-            if 'SAC' in data:
+            if _has_value(data, 'SAC'):
                 inverter_data['fields']['SAC'] = _get_float_value(data, 'SAC')
-            if 'IDC_2' in data:
+            if _has_value(data, 'IDC_2'):
                 inverter_data['fields']['IDC_MPP2'] = _get_float_value(data, 'IDC_2')
                 inverter_data['fields']['UDC_MPP2'] = _get_float_value(data, 'UDC_2')
-            if 'IDC_3' in data:
+            if _has_value(data, 'IDC_3'):
                 inverter_data['fields']['IDC_MPP3'] = _get_float_value(data, 'IDC_3')
                 inverter_data['fields']['UDC_MPP3'] = _get_float_value(data, 'UDC_3')
-            if 'IDC_4' in data:
+            if _has_value(data, 'IDC_4'):
                 inverter_data['fields']['IDC_MPP4'] = _get_float_value(data, 'IDC_4')
                 inverter_data['fields']['UDC_MPP4'] = _get_float_value(data, 'UDC_4')
 
