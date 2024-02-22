@@ -8,7 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased 0.2.0-beta]
 ### Added
 - Added support for realtime meter and powerflow data
-- Added smartmeter, powerflow and cummulation inverter sample data
+- Added sample data for smartmeter, powerflow and cummulation inverter data
+- Added the serial number of the inverter as an additional tag
+
+### Changed
+- Updated the configuration options of the config file
 
 ## [0.1.0] - 2023-06-01
 ### Added

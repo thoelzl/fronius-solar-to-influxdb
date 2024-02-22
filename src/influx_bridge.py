@@ -19,8 +19,6 @@ class SunIsDown(Exception):
 
 
 class InfluxBridge:
-    REQUEST_INTERVAL = 3.0
-
     def __init__(self, config: Config, influx_client: InfluxDBClient):
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -39,6 +37,12 @@ class InfluxBridge:
 
         while True:
             try:
+                if not self.processor.inverter_map:
+                    url = f"{self.config.inverter.url}/solar_api/v1/GetInverterInfo.cgi"
+                    self.logger.info(f"update inverter map: {url}")
+                    response = requests.get(url)
+                    self.processor.update_inverters(response.json())
+
                 self._sun_is_shining()
 
                 collected_data = []
@@ -47,7 +51,7 @@ class InfluxBridge:
                     response = requests.get(url)
                     data = self.processor.process(metric, response.json())
                     collected_data.extend(data)
-                    time.sleep(self.REQUEST_INTERVAL)
+                    time.sleep(self.config.record.request_interval)
 
                 if collected_data:
                     self._write_data_points(collected_data)
@@ -118,7 +122,7 @@ class InfluxBridge:
         write_api.write(bucket=self.config.influx_bucket, record=collected_data)
 
     def _sun_is_shining(self):
-        if self.config.ignore_sun_down:
+        if self.config.record.ignore_sunset:
             return
 
         sun = self.config.location.sun()

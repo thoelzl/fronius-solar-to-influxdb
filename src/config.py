@@ -17,10 +17,15 @@ class Config:
         device_id: int
         metrics: List[str]
 
+    @dataclass
+    class Record:
+        request_interval: float
+        ignore_sunset: bool
+
     inverter: Inverter
+    record: Record
     location: Location
     influx_bucket: str
-    ignore_sun_down: bool = False
 
 
 def load_config(config_path: str) -> Tuple[Config, Dict]:
@@ -33,6 +38,14 @@ def load_config(config_path: str) -> Tuple[Config, Dict]:
             metrics=cfg['inverter']['metrics']
         )
 
+        record = Config.Record(
+            request_interval=cfg['record']['request_interval'],
+            ignore_sunset=cfg['record']['ignore_sunset']
+        )
+
+        if record.request_interval < 2.0 or record.request_interval > 3600.0:
+            raise ValueError(f'invalid request interval: {record.request_interval} s')
+
         location_info = LocationInfo(
             name=cfg['location']['name'],
             region=cfg['location']['region'],
@@ -43,6 +56,7 @@ def load_config(config_path: str) -> Tuple[Config, Dict]:
 
         config = Config(
             inverter=inverter,
+            record=record,
             location=Location(location_info),
             influx_bucket=cfg['influxdb']['bucket'],
         )

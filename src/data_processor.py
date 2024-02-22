@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List
+from typing import Dict, List, Optional, Tuple
 
 import datetime
 
@@ -63,12 +63,13 @@ INVERTER_METRICS = [
 class DataProcessor:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.inverter_map = {}
 
-    def process(self, metric: str, response: Dict) -> List[Dict]:
+    def _check_response(self, response: Dict) -> Optional[Tuple]:
         try:
             if response['Head']['Status']['Code'] != 0:
                 self.logger.warning(f"Response status code is not 0: code={response['Head']['Status']['Code']}")
-                return []
+                return None
             
             timestamp = response['Head']['Timestamp']
             data = response['Body']['Data']
@@ -77,6 +78,25 @@ class DataProcessor:
 
         # workaround for wrong timezone on Symo GEN24
         timestamp = timestamp.replace("+00:00", "")
+        return timestamp, data
+
+    def update_inverters(self, response: Dict):
+        tpl = self._check_response(response)
+        if not tpl:
+            return
+        _, data = tpl
+
+        self.inverter_map = {}
+        
+        # iterate over inverters
+        for id, info in data.items():
+            self.inverter_map[id] = info['UniqueID']
+
+    def process(self, metric: str, response: Dict) -> List[Dict]:
+        tpl = self._check_response(response)
+        if not tpl:
+            return []
+        timestamp, data = tpl   
 
         if metric in ["CumulationInverterData", "CommonInverterData", "3PInverterData", "MinMaxInverterData"]:
             collection = response['Head']['RequestArguments']['DataCollection']
@@ -93,11 +113,12 @@ class DataProcessor:
         self.logger.debug(f"process device_id={device_id}, {collection}, {timestamp}: {data}")
         if collection == 'CommonInverterData':
             device_status = {
-                'measurement': 'DeviceStatus',
+                'measurement': 'InverterDeviceStatus',
                 'time': timestamp,
                 'fields': data['DeviceStatus'],
                 'tags': {
-                    'DeviceId': device_id
+                    'DeviceId': device_id,
+                    'Serial': self.inverter_map.get(device_id, "None")
                 }
             }
 
@@ -116,7 +137,8 @@ class DataProcessor:
                     'TOTAL_ENERGY': _get_float_value(data, 'TOTAL_ENERGY'),
                 },
                 'tags': {
-                    'DeviceId': device_id
+                    'DeviceId': device_id,
+                    'Serial': self.inverter_map.get(device_id, "None")
                 }
             }
 
@@ -148,7 +170,8 @@ class DataProcessor:
                         'UAC_L3': _get_float_value(data, 'UAC_L3'),
                     },
                     'tags': {
-                        'DeviceId': device_id
+                        'DeviceId': device_id,
+                        'Serial': self.inverter_map.get(device_id, "None")
                     }
                 }
             ]
@@ -182,7 +205,8 @@ class DataProcessor:
                         'TOTAL_ENERGY': _get_float_value(data, 'TOTAL_ENERGY'),
                     },
                     'tags': {
-                        'DeviceId': device_id
+                        'DeviceId': device_id,
+                        'Serial': self.inverter_map.get(device_id, "None")
                     }
                 }
             ]
@@ -263,9 +287,9 @@ class DataProcessor:
         data_list = []
 
         # Iterate over inverters
-        for id, inverter in data['Inverters'].items():
+        for device_id, inverter in data['Inverters'].items():
             inverter_data = {
-                'measurement': 'PowerFlowInverterData',
+                'measurement': 'PowerFlowDataInverter',
                 'time': timestamp,
                 'fields': {
                     'E_Day': _get_float(inverter, 'E_Day'),
@@ -274,7 +298,8 @@ class DataProcessor:
                     'P': _get_float(inverter, 'P'),
                 },
                 'tags': {
-                    'DeviceId': id,
+                    'DeviceId': device_id,
+                    'Serial': self.inverter_map.get(device_id, "None"),
                     'Version': _get_string(data, 'Version'),
                 },
             }
@@ -288,14 +313,13 @@ class DataProcessor:
         # Map primary SmartMeter data
         site_data = data['Site']
         meter_data = {
-            'measurement': 'PowerFlowMeterData',
+            'measurement': 'PowerFlowDataSite',
             'time': timestamp,
             'fields': {
                 'BackupMode': _get_bool(site_data, 'BackupMode'),
                 'E_Day': _get_float(site_data, 'E_Day'),
                 'E_Total': _get_float(site_data, 'E_Total'),
                 'E_Year': _get_float(site_data, 'E_Year'),
-                'Meter_Location': _get_string(site_data, 'Meter_Location'),
                 'Mode': _get_string(site_data, 'Mode'),
                 'P_Akku': _get_float(site_data, 'P_Akku'),
                 'P_Grid': _get_float(site_data, 'P_Grid'),
@@ -306,6 +330,7 @@ class DataProcessor:
             },
             'tags': {
                 'Version': _get_string(data, 'Version'),
+                'Location': _get_string(site_data, 'Meter_Location'),
             },
         }
         if 'BatteryStandby' in site_data:
