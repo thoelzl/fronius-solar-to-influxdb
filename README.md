@@ -17,7 +17,7 @@ pip install -e .
 
 Run the application with your own config file.
 ```
-python ./src/influx_bridge.py --config ./config/my_config.yaml
+python ./src/influxdb_bridge.py --config ./config/my_config.yaml
 ```
 
 ## Docker based environment
@@ -29,7 +29,7 @@ docker build -t fronius-solar-to-influxdb:latest -f ./docker/Dockerfile .
 
 Run application inside a docker container
 ```
-docker run --rm -d --network host --name symo2influx -v ./config/:/config fronius-solar-to-influxdb:latest python -u ./src/influx_bridge.py --config /config/my_config.yaml
+docker run --rm -d --network host --name symo2influx -v ./config/:/config fronius-solar-to-influxdb:latest python -u ./src/influxdb_bridge.py --config /config/my_config.yaml --influxdb-file /config/influxdb_config.ini
 ```
 
 Show log output

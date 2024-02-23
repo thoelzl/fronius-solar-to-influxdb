@@ -19,16 +19,16 @@ class Config:
 
     @dataclass
     class Record:
+        influxdb_bucket: str
         request_interval: float
         ignore_sunset: bool
 
     inverter: Inverter
     record: Record
     location: Location
-    influx_bucket: str
 
 
-def load_config(config_path: str) -> Tuple[Config, Dict]:
+def load_config(config_path: str) -> Config:
     with open(config_path, "r") as yml_file:
         cfg = yaml.load(yml_file, Loader=yaml.FullLoader)
         inverter = Config.Inverter(
@@ -39,6 +39,7 @@ def load_config(config_path: str) -> Tuple[Config, Dict]:
         )
 
         record = Config.Record(
+            influxdb_bucket=cfg['record']['influxdb_bucket'],
             request_interval=cfg['record']['request_interval'],
             ignore_sunset=cfg['record']['ignore_sunset']
         )
@@ -58,21 +59,6 @@ def load_config(config_path: str) -> Tuple[Config, Dict]:
             inverter=inverter,
             record=record,
             location=Location(location_info),
-            influx_bucket=cfg['influxdb']['bucket'],
         )
 
-        client_config = {
-            'url': cfg['influxdb']['url'],
-            'org': cfg['influxdb']['organization'],
-            'verify_ssl': cfg['influxdb']['verify_ssl']
-        }
-
-        if 'username' in cfg['influxdb'] and 'password' in cfg['influxdb']:
-            client_config['username'] = cfg['influxdb']['username']
-            client_config['password'] = cfg['influxdb']['password']
-        elif 'auth_token' in cfg['influxdb']:
-            client_config['token'] = cfg['influxdb']['auth_token']
-        else:
-            raise ValueError('No authentication token or username/password provided for InfluxDB')
-
-        return config, client_config
+        return config

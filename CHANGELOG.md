@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated the configuration options of the config file
+- Moved InfluxDB client configuration to `*.ini` file
 
 ## [0.1.0] - 2023-06-01
 ### Added

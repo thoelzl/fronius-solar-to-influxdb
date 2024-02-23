@@ -18,7 +18,7 @@ class SunIsDown(Exception):
     pass
 
 
-class InfluxBridge:
+class InfluxDBBridge:
     def __init__(self, config: Config, influx_client: InfluxDBClient):
         self.logger = logging.getLogger(self.__class__.__name__)
 
@@ -29,8 +29,8 @@ class InfluxBridge:
 
         self.logger.info("initialize application")
         self.logger.info(f"- inverter config: {self.config.inverter}")
+        self.logger.info(f"- record config: {self.config.record}")
         self.logger.info(f"- location info: {self.config.location}")
-        self.logger.info(f"- influxdb bucket: {self.config.influx_bucket}")
 
     def run(self):
         self.logger.info("starting application")
@@ -119,7 +119,7 @@ class InfluxBridge:
         self.logger.info(f"writing data: {[d['measurement'] for d in collected_data]}")
 
         write_api = self.influx_client.write_api(write_options=SYNCHRONOUS)
-        write_api.write(bucket=self.config.influx_bucket, record=collected_data)
+        write_api.write(bucket=self.config.record.influxdb_bucket, record=collected_data)
 
     def _sun_is_shining(self):
         if self.config.record.ignore_sunset:
@@ -140,18 +140,19 @@ def main():
     parser = argparse.ArgumentParser(prog='Fronius Solar API to InfluxDB Bridge',
                                      description='Collect Fronius inverter and SMA and store it in InfluxDB')
     parser.add_argument('--config', type=str, default='./config/sample_config.yaml', help='Path to YAML config file')
+    parser.add_argument('--influxdb-file', type=str, default='./config/influxdb_config.ini', help='InfluxDB Client configuration via file')
     args = parser.parse_args()
 
-    # load config file and initialize InfluxDB client
-    config, client_config = load_config(args.config)
-    client = InfluxDBClient(**client_config)
+    # initialize InfluxDB client
+    client = InfluxDBClient.from_config_file(args.influxdb_file)
 
-    # init and start application
-    influx_bridge = InfluxBridge(config, client)
+    # load config file and start application
+    config = load_config(args.config)
+    influxdb_bridge = InfluxDBBridge(config, client)
     try:
-        influx_bridge.run()
+        influxdb_bridge.run()
     except KeyboardInterrupt:
-        influx_bridge.close()
+        influxdb_bridge.close()
 
 
 if __name__ == '__main__':

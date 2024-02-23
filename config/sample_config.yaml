@@ -10,6 +10,7 @@ inverter:
     # - "MeterRealtimeData"
     # - "PowerFlowRealtimeData"
 record:
+  influxdb_bucket: my-bucket      # InfluxDB bucket name
   request_interval: 3.0           # Request interval between different metrics in seconds (API has a request rate limit, up to 2 realtime requests are allowed to be performed in parallel with keeping a timeout of 4 seconds between two consecutive calls.)
   ignore_sunset: false            # Ignore sunset and even collect data when the sun is down.
 location:
@@ -18,11 +19,3 @@ location:
   timezone: "Europe/London"       # Location timezone
   latitude: 51.48                 # Location latitude,
   longitude: -0.00                # Location longitude
-influxdb:
-  url: http://localhost:8086      # InfluxDB server API url
-  organization: my-org            # InfluxDB organization name
-  bucket: my-bucket               # InfluxDB bucket name
-  verify_ssl: true                # verify SSL certificate (set to false for self-signed certificates)
-  username: my-user               # (auth variant 1) username to authenticate via username/password
-  password: my-password           # (auth variant 1) password to authenticate via username/password
-  #  auth_token: my-token            # (auth variant 2) authentication token to authenticate via token
